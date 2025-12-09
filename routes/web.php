@@ -88,23 +88,28 @@ Route::middleware(['auth'])->group(function () {
     });
 
 
-  // Checkout + PayPal
-Route::prefix('checkout')->name('checkout.')->group(function () {
+      // Checkout + PayPal + COD
+    Route::prefix('checkout')->name('checkout.')->group(function () {
 
-    // Checkout page
-    Route::get('/', [CheckoutController::class, 'index'])->name('index');
+        // Checkout page
+        Route::get('/', [CheckoutController::class, 'index'])->name('index');
 
-    // Place Order
-    Route::post('/process', [CheckoutController::class, 'process'])->name('process');
+        // Place order for PayPal
+        Route::post('/process', [CheckoutController::class, 'process'])->name('process');
 
-    // PayPal - Create Payment
-    Route::get('/paypal/{order}', [CheckoutController::class, 'payWithPayPal'])
-        ->name('paypal');
+        // Cash on Delivery
+        Route::post('/cod', [CheckoutController::class, 'cod'])->name('cod');
+
+        // PayPal - Create Payment
+        Route::get('/paypal/{order}', [CheckoutController::class, 'payWithPayPal'])->name('paypal');
 
     // PayPal - Callback (after approval)
     Route::get('/paypal/callback', [CheckoutController::class, 'handlePayPalCallback'])
         ->name('paypal.callback');
 });
+
+
+
 
 
 });
@@ -132,3 +137,12 @@ Route::middleware(['auth', 'admin'])
         // Users
         Route::resource('users', UserController::class);
     });
+    // Customer Orders
+Route::prefix('customer')->name('customer.')->group(function () {
+    Route::get('/orders', [CustomerOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [CustomerOrderController::class, 'show'])->name('orders.show');
+
+    // Cancel order (PATCH)
+    Route::patch('/orders/{order}/cancel', [CustomerOrderController::class, 'cancel'])->name('orders.cancel');
+});
+

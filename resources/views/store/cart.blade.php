@@ -1,70 +1,120 @@
 @extends('layouts.customer')
 
 @section('content')
-<div class="max-w-4xl mx-auto p-6 space-y-6">
+<div class="max-w-4xl mx-auto p-6 space-y-8 bg-[#DFF9F3] rounded-3xl shadow-md">
 
-    <h2 class="text-2xl font-bold mb-4 text-white">Your Cart</h2>
+    <!-- Title -->
+    <h2 class="text-3xl font-extrabold text-[#2ECCB0] flex items-center gap-2">
+        <!-- Cart Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-[#2ECCB0]" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M2 3h2l3.6 9.59a2 2 0 001.87 1.29H17a2 2 0 001.92-1.46L21 6H6" />
+            <circle cx="9" cy="20" r="1"></circle>
+            <circle cx="17" cy="20" r="1"></circle>
+        </svg>
+        Your Cart
+    </h2>
 
     @if(session('cart') && count(session('cart')) > 0)
-        <table class="w-full text-left bg-gray-800 rounded-xl text-white overflow-hidden">
-            <thead class="bg-gray-700">
+        <table class="w-full text-left bg-white rounded-2xl overflow-hidden shadow-md">
+            <thead class="bg-[#2ECCB0] text-white">
                 <tr>
-                    <th class="px-4 py-2">Product</th>
-                    <th class="px-4 py-2">Price</th>
-                    <th class="px-4 py-2">Quantity</th>
-                    <th class="px-4 py-2">Subtotal</th>
-                    <th class="px-4 py-2">Actions</th>
+                    <th class="px-4 py-3">Product</th>
+                    <th class="px-4 py-3">Price</th>
+                    <th class="px-4 py-3">Qty</th>
+                    <th class="px-4 py-3">Subtotal</th>
+                    <th class="px-4 py-3">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+
+            <tbody class="text-[#2E2E2E]">
                 @php $total = 0; @endphp
+
                 @foreach(session('cart') as $id => $item)
-                    @php $subtotal = $item['price'] * $item['quantity']; $total += $subtotal; @endphp
-                    <tr class="border-b border-gray-700">
-                        <td class="px-4 py-2 flex items-center space-x-2">
+                    @php 
+                        $subtotal = $item['price'] * $item['quantity']; 
+                        $total += $subtotal; 
+                    @endphp
+
+                    <tr class="border-b border-[#DFF9F3]">
+                        <td class="px-4 py-3 flex items-center space-x-3">
                             @if($item['image'])
                                 <img src="{{ asset('storage/' . $item['image']) }}"
-                                     alt="{{ $item['name'] }}"
-                                     class="h-12 w-12 object-cover rounded">
+                                     class="h-12 w-12 object-cover rounded-xl shadow-sm">
                             @else
-                                <span class="h-12 w-12 flex items-center justify-center bg-gray-600 text-gray-300 rounded text-xs">No Image</span>
+                                <span class="h-12 w-12 flex items-center justify-center bg-gray-200 text-gray-500 rounded-xl text-xs">No Image</span>
                             @endif
-                            <span>{{ $item['name'] }}</span>
+                            <span class="font-semibold">{{ $item['name'] }}</span>
                         </td>
-                        <td class="px-4 py-2">${{ number_format($item['price'], 2) }}</td>
-                        <td class="px-4 py-2">
-                            <form action="{{ route('cart.update', $id) }}" method="POST" class="flex items-center">
+
+                        <td class="px-4 py-3 font-semibold">
+                            ${{ number_format($item['price'], 2) }}
+                        </td>
+
+                        <td class="px-4 py-3">
+                            <form action="{{ route('cart.update', $id) }}" method="POST" class="flex items-center gap-2">
                                 @csrf
-                                <input type="number" name="quantity" value="{{ $item['quantity'] }}" min="1"
-                                       class="w-16 px-2 py-1 rounded text-black mr-2">
-                                <button type="submit" class="bg-green-600 px-3 py-1 rounded hover:bg-green-700">
+                                <input type="number"
+                                       name="quantity"
+                                       value="{{ $item['quantity'] }}"
+                                       min="1"
+                                       class="w-16 px-2 py-1 rounded-xl border border-[#2ECCB0] text-[#2E2E2E] bg-[#DFF9F3]">
+                                
+                                <button type="submit"
+                                    class="bg-[#2ECCB0] hover:bg-[#29b79f] px-3 py-1 rounded-xl text-white font-medium shadow">
                                     Update
                                 </button>
                             </form>
                         </td>
-                        <td class="px-4 py-2">${{ number_format($subtotal, 2) }}</td>
-                        <td class="px-4 py-2">
+
+                        <td class="px-4 py-3 font-semibold text-[#2E2E2E]">
+                            ${{ number_format($subtotal, 2) }}
+                        </td>
+
+                        <td class="px-4 py-3">
                             <form action="{{ route('cart.remove', $id) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="bg-red-600 px-3 py-1 rounded hover:bg-red-700">
+                                <button type="submit"
+                                    class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-xl text-white font-medium shadow flex items-center gap-1">
+                                    <!-- Trash Icon -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M6 7h12M9 7V4h6v3m2 0v13a2 2 0 01-2 2H8a2 2 0 01-2-2V7h12z" />
+                                    </svg>
                                     Remove
                                 </button>
                             </form>
                         </td>
                     </tr>
+
                 @endforeach
             </tbody>
         </table>
 
-        <div class="text-right mt-4">
-            <p class="text-xl font-bold text-white">Total: ${{ number_format($total, 2) }}</p>
-            <a href="{{ route('checkout.index') }}" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded mt-2 inline-block">
+        <!-- TOTAL + CHECKOUT -->
+        <div class="text-right mt-6">
+            <p class="text-2xl font-bold text-[#2E2E2E]">
+                Total: ${{ number_format($total, 2) }}
+            </p>
+
+            <a href="{{ route('checkout.index') }}"
+               class="bg-[#2ECCB0] hover:bg-[#29b79f] px-5 py-3 rounded-2xl text-white font-semibold shadow-md mt-3 inline-flex items-center gap-2">
+                <!-- Checkout Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M9 12h6m-3-3v6m8-12v16a2 2 0 01-2 2H6a2 2 0 01-2-2V3a2 2 0 012-2h12a2 2 0 012 2z" />
+                </svg>
                 Proceed to Checkout
             </a>
         </div>
+
     @else
-        <p class="text-gray-300">Your cart is empty.</p>
-        <a href="{{ route('store.index') }}" class="text-green-400 hover:underline mt-2 inline-block">Go Shopping →</a>
+        <p class="text-[#2E2E2E] text-lg font-medium">Your cart is empty.</p>
+        <a href="{{ route('store.index') }}" class="text-[#2ECCB0] hover:underline mt-2 inline-block">
+            Go Shopping →
+        </a>
     @endif
 </div>
 @endsection

@@ -1,93 +1,102 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="max-w-3xl mx-auto shadow-md rounded-xl p-6 mt-6">
-    <h2 class="text-2xl font-bold mb-6 text-center">Edit Product</h2>
+<div class="max-w-4xl mx-auto mt-8 bg-[#FFFFFF] rounded-3xl shadow-xl overflow-hidden">
 
-    <!-- PRODUCT IMAGE ON TOP (CENTERED) -->
-    <div class="flex justify-center mb-6">
-        @if($product->image)
-            <img src="{{ asset('storage/' . $product->image) }}"
-                 class="w-40 h-40 object-cover rounded-xl shadow-lg">
-        @else
-            <div class="w-40 h-40 flex items-center justify-center bg-gray-100 rounded-xl shadow-lg">
-                <p class="text-gray-500 text-sm">No Image</p>
-            </div>
-        @endif
+    <!-- Header -->
+    <div class="bg-[#2ECCB0] p-6 rounded-t-3xl">
+        <h1 class="text-3xl font-bold text-[#2E2E2E]">
+            Edit Product
+        </h1>
+        <p class="text-[#2E2E2E]/80 mt-1">
+            Update your product details below.
+        </p>
     </div>
 
-    <!-- UPLOAD NEW IMAGE -->
-    <div>
-        <label class="flex justify-center mb-1 font-semibold">Upload New Image</label>
-        <input type="file" 
-               name="image"
-               class="w-full text-sm text-gray-900">
-    </div>
-
-    <form 
-        action="{{ route('admin.products.update', $product->id) }}" 
-        method="POST" 
-        enctype="multipart/form-data"
-        class="space-y-5">
+    <!-- Form -->
+    <form action="{{ route('admin.products.update', $product->id) }}" 
+          method="POST" enctype="multipart/form-data" 
+          class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
 
         @csrf
         @method('PUT')
 
-        <!-- NAME -->
-        <div>
-            <label class="block mb-1 font-semibold">Name</label>
-            <input type="text" 
-                   name="name" 
-                   value="{{ $product->name }}" 
-                   required
-                   class="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-300 text-gray-900">
+        <!-- Left Column -->
+        <div class="space-y-6">
+
+            <!-- Product Name -->
+            <div class="flex flex-col">
+                <label class="mb-2 font-semibold text-[#2E2E2E]">Product Name</label>
+                <input type="text" name="name" value="{{ old('name', $product->name) }}"
+                       class="p-3 rounded-xl bg-[#DFF9F3] border border-[#2ECCB0] focus:ring-2 focus:ring-[#2ECCB0] outline-none transition">
+                @error('name') <span class="text-red-500 mt-1">{{ $message }}</span> @enderror
+            </div>
+
+            <!-- Category -->
+            <div class="flex flex-col">
+                <label class="mb-2 font-semibold text-[#2E2E2E]">Category</label>
+                <select name="category_id"
+                        class="p-3 rounded-xl bg-[#DFF9F3] border border-[#2ECCB0] focus:ring-2 focus:ring-[#2ECCB0] outline-none transition">
+                    <option value="">-- Select Category --</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('category_id') <span class="text-red-500 mt-1">{{ $message }}</span> @enderror
+            </div>
+
+            <!-- Description (span 2 columns) -->
+            <div class="flex flex-col md:col-span-2">
+                <label class="mb-2 font-semibold text-[#2E2E2E]">Description</label>
+                <textarea name="description" rows="4"
+                          class="p-3 rounded-xl bg-[#DFF9F3] border border-[#2ECCB0] focus:ring-2 focus:ring-[#2ECCB0] outline-none transition">{{ old('description', $product->description) }}</textarea>
+            </div>
+
         </div>
 
-        <!-- CATEGORY -->
-        <div>
-            <label class="block mb-1 font-semibold">Category</label>
-            <select name="category_id"
-                    required
-                    class="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-300 text-gray-900">
-                @foreach ($categories as $category)
-                    <option value="{{ $category->id }}"
-                        {{ $product->category_id == $category->id ? 'selected' : '' }}>
-                        {{ $category->name }}
-                    </option>
-                @endforeach
-            </select>
+        <!-- Right Column -->
+        <div class="space-y-6">
+
+            <!-- Price -->
+            <div class="flex flex-col">
+                <label class="mb-2 font-semibold text-[#2E2E2E]">Price (USD)</label>
+                <input type="number" step="0.01" name="price" value="{{ old('price', $product->price) }}"
+                       class="p-3 rounded-xl bg-[#DFF9F3] border border-[#2ECCB0] focus:ring-2 focus:ring-[#2ECCB0] outline-none transition">
+                @error('price') <span class="text-red-500 mt-1">{{ $message }}</span> @enderror
+            </div>
+
+            <!-- Stock -->
+            <div class="flex flex-col">
+                <label class="mb-2 font-semibold text-[#2E2E2E]">Stock</label>
+                <input type="number" name="stock" value="{{ old('stock', $product->stock) }}"
+                       class="p-3 rounded-xl bg-[#DFF9F3] border border-[#2ECCB0] focus:ring-2 focus:ring-[#2ECCB0] outline-none transition">
+                @error('stock') <span class="text-red-500 mt-1">{{ $message }}</span> @enderror
+            </div>
+
+            <!-- Product Image -->
+            <div class="flex flex-col">
+                <label class="mb-2 font-semibold text-[#2E2E2E]">Product Image</label>
+                <input type="file" name="image"
+                       class="p-3 rounded-xl bg-[#DFF9F3] border border-[#2ECCB0] focus:ring-2 focus:ring-[#2ECCB0] outline-none transition">
+                @if($product->image)
+                    <img src="{{ asset('storage/'.$product->image) }}" 
+                         class="w-40 h-40 mt-3 object-cover rounded-xl border border-[#2ECCB0] shadow-lg">
+                @endif
+                @error('image') <span class="text-red-500 mt-1">{{ $message }}</span> @enderror
+            </div>
+
         </div>
 
-        <!-- PRICE -->
-        <div>
-            <label class="block mb-1 font-semibold">Price</label>
-            <input type="number" 
-                   name="price" 
-                   step="0.01"
-                   value="{{ $product->price }}" 
-                   required
-                   class="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-300 text-gray-900">
-        </div>
-
-        <!-- STOCK -->
-        <div>
-            <label class="block mb-1 font-semibold">Stock</label>
-            <input type="number" 
-                   name="stock" 
-                   value="{{ $product->stock }}" 
-                   required
-                   class="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-300 text-gray-900">
-        </div>
-
-        <!-- SUBMIT BUTTON -->
-        <div class="pt-3 text-center">
+        <!-- Submit Button (full width) -->
+        <div class="md:col-span-2 flex justify-end">
             <button type="submit"
-                    class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition">
+                    class="bg-[#2ECCB0] hover:bg-[#26b696] text-[#2E2E2E] font-bold px-8 py-3 rounded-2xl shadow-lg transition">
                 Update Product
             </button>
         </div>
 
     </form>
-
 </div>
 @endsection

@@ -1,54 +1,66 @@
 @extends('layouts.admin')
 
 @section('content')
-<h1 class="text-3xl font-bold mb-4">Products</h1>
-<a href="{{ route('admin.products.create') }}" class="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 text-white">Add Product</a>
+<div class="space-y-6">
 
-@if(session('success'))
-<div class="bg-green-600 text-white p-3 rounded mt-2">{{ session('success') }}</div>
-@endif
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+        <h1 class="text-3xl font-bold text-[#2ECCB0] mb-2 sm:mb-0">Products</h1>
+        <a href="{{ route('admin.products.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">
+            Add Product
+        </a>
+    </div>
 
-<div class="mt-4 overflow-x-auto">
-    <table class="w-full table-auto bg-gray-800 text-gray-100 rounded">
-        <thead>
-            <tr class="border-b border-gray-700">
-                <th class="px-4 py-2">Name</th>
-                <th class="px-4 py-2">Category</th>
-                <th class="px-4 py-2">Price</th>
-                <th class="px-4 py-2">Stock</th>
-                <th class="px-4 py-2">Image</th>
-                <th class="px-4 py-2">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($products as $product)
-            <tr class="border-b border-gray-700">
-                <td class="px-4 py-2">{{ $product->name }}</td>
-                <td class="px-4 py-2">{{ $product->category->name ?? '-' }}</td>
-                <td class="px-4 py-2">${{ $product->price }}</td>
-                <td class="px-4 py-2">{{ $product->stock }}</td>
-                <td class="px-4 py-2">
-                    @if($product->image)
-                    <img src="{{ asset('storage/'.$product->image) }}" class="w-16 h-16 object-cover rounded">
-                    @else
-                    -
-                    @endif
-                </td>
-                <td class="px-4 py-2 space-x-2">
-                    <a href="{{ route('admin.products.edit', $product) }}" class="bg-yellow-500 px-3 py-1 rounded hover:bg-yellow-600">Edit</a>
-                    <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="inline">
+    <!-- Success message -->
+    @if(session('success'))
+    <div class="bg-green-600 text-white p-3 rounded shadow">
+        {{ session('success') }}
+    </div>
+    @endif
+
+    <!-- Products Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+        @foreach($products as $product)
+        <div class="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden text-sm">
+            
+            <!-- Image -->
+            <div class="h-36 w-full bg-gray-100 flex items-center justify-center">
+                @if($product->image)
+                    <img src="{{ asset('storage/'.$product->image) }}" class="h-full w-full object-cover transition-transform hover:scale-105">
+                @else
+                    <span class="text-gray-400">No Image</span>
+                @endif
+            </div>
+
+            <!-- Info -->
+            <div class="p-3 space-y-1">
+                <h2 class="text-md font-semibold text-gray-800">{{ $product->name }}</h2>
+                <p class="text-gray-500">{{ $product->category->name ?? 'Uncategorized' }}</p>
+                <p class="text-lg font-bold text-[#2ECCB0]">${{ number_format($product->price, 2) }}</p>
+                <p class="text-gray-600 text-sm">Stock: {{ $product->stock }}</p>
+
+                <!-- Actions -->
+                <div class="flex space-x-1 mt-2 text-xs">
+                    <a href="{{ route('admin.products.edit', $product) }}" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white text-center py-1 rounded transition">
+                        Edit
+                    </a>
+                    <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="flex-1">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="bg-red-600 px-3 py-1 rounded hover:bg-red-700" onclick="return confirm('Delete this product?')">Delete</button>
+                        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-1 rounded transition" onclick="return confirm('Delete this product?')">
+                            Delete
+                        </button>
                     </form>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
 
-    <div class="mt-4">
+    <!-- Pagination -->
+    <div class="mt-6">
         {{ $products->links() }}
     </div>
+
 </div>
 @endsection
