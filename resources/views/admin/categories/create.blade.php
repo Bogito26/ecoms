@@ -1,24 +1,28 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="max-w-3xl mx-auto mt-6 bg-[#FFFFFF] p-6 rounded-3xl shadow-lg">
+<div class="max-w-md mx-auto mt-6 bg-white p-5 rounded-2xl shadow-lg">
 
-    <h1 class="text-2xl font-bold mb-6 text-[#2E2E2E]">Add Category</h1>
+    <h1 class="text-xl font-bold mb-4 text-[#D85C20]">Add Category</h1>
 
-    <form action="{{ route('admin.categories.store') }}" method="POST" class="space-y-4">
+    <form action="{{ route('admin.categories.store') }}" method="POST" class="space-y-3">
         @csrf
 
-        <div>
-            <label class="block mb-1 font-semibold text-[#2E2E2E]">Name</label>
+        <!-- Category Name -->
+        <div class="flex flex-col">
+            <label class="mb-1 text-sm font-medium text-[#2E2E2E]">Name</label>
             <input type="text" 
                    name="name" 
                    value="{{ old('name') }}" 
-                   class="w-full p-3 rounded-xl bg-[#DFF9F3] border border-[#2ECCB0] focus:ring-2 focus:ring-[#2ECCB0] outline-none transition">
-            @error('name') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
+                   class="w-full p-2 rounded-lg bg-[#FFF4EB] border border-[#D85C20] focus:ring-2 focus:ring-[#D85C20] outline-none text-sm transition">
+            @error('name') 
+                <div class="text-red-500 text-xs mt-1">{{ $message }}</div> 
+            @enderror
         </div>
 
+        <!-- Submit Button -->
         <button type="submit" 
-                class="bg-[#2ECCB0] hover:bg-[#26b696] text-[#2E2E2E] font-semibold px-6 py-2 rounded-2xl shadow-md transition">
+                class="w-full bg-[#D85C20] hover:bg-[#b14a1a] text-white font-semibold text-sm py-2 rounded-lg shadow-sm transition">
             Save Category
         </button>
     </form>

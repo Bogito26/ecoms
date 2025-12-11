@@ -14,25 +14,39 @@ class LoginController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
+{
+    $request->validate([
+        'email'    => 'required|email',
+        'password' => 'required|string',
+    ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+    $credentials = $request->only('email', 'password');
 
-            $user = Auth::user();
+    if (Auth::attempt($credentials)) {
+        $user = Auth::user();
 
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            }
-
-            return redirect()->route('dashboard');
+        // Check if account is active
+        if (!$user->is_active) {
+            Auth::logout();
+            return back()->withErrors([
+                'email' => 'Your account is deactivated. Please contact the admin to reactivate it.'
+            ])->withInput();
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
+        $request->session()->regenerate();
+
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return redirect()->route('dashboard');
     }
+
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ])->withInput();
+}
+
 
     public function logout(Request $request)
     {

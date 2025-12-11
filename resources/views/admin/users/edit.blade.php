@@ -1,45 +1,52 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="max-w-md mx-auto bg-[#DFF9F3] rounded-3xl shadow-lg p-6 mt-6">
+<div class="max-w-sm mx-auto bg-[#FFF4EB] rounded-2xl shadow-lg p-5 mt-6">
 
-    <h2 class="text-2xl font-bold text-[#2ECCB0] mb-6 text-center">Edit User</h2>
+    <h2 class="text-xl font-bold text-[#D85C20] mb-5 text-center">User Details</h2>
 
-    <form action="{{ route('admin.users.update', $user->id) }}" method="POST" class="space-y-4">
-        @csrf
-        @method('PUT')
+    <!-- PROFILE PICTURE -->
+    <div class="flex flex-col items-center mb-4">
+        @if($user->profile_picture && file_exists(storage_path('app/public/profile_pictures/' . $user->profile_picture)))
+            <img src="{{ asset('storage/profile_pictures/' . $user->profile_picture) }}"
+                 alt="Profile Picture" class="w-20 h-20 object-cover rounded-full mb-2 border-2 border-[#D85C20]">
+        @else
+            <div class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-2 border-2 border-[#D85C20]">
+                <span class="text-gray-400 text-sm">No Picture</span>
+            </div>
+        @endif
+    </div>
 
-        <!-- NAME -->
-        <div class="flex flex-col">
-            <label class="mb-1 font-semibold text-[#2E2E2E]">Name</label>
-            <input type="text" name="name" value="{{ $user->name }}" required
-                   class="px-3 py-2 rounded-xl border border-[#2ECCB0] bg-white text-[#2E2E2E] focus:ring-2 focus:ring-[#2ECCB0] outline-none transition">
+    <!-- USER INFO -->
+    <div class="space-y-2">
+        <div>
+            <label class="text-sm font-semibold text-[#2E2E2E]">Name</label>
+            <p class="px-3 py-2 rounded-lg border border-[#D85C20] bg-white text-[#2E2E2E] text-sm">
+                {{ $user->name }}
+            </p>
         </div>
 
-        <!-- EMAIL -->
-        <div class="flex flex-col">
-            <label class="mb-1 font-semibold text-[#2E2E2E]">Email</label>
-            <input type="email" name="email" value="{{ $user->email }}" required
-                   class="px-3 py-2 rounded-xl border border-[#2ECCB0] bg-white text-[#2E2E2E] focus:ring-2 focus:ring-[#2ECCB0] outline-none transition">
+        <div>
+            <label class="text-sm font-semibold text-[#2E2E2E]">Email</label>
+            <p class="px-3 py-2 rounded-lg border border-[#D85C20] bg-white text-[#2E2E2E] text-sm">
+                {{ $user->email }}
+            </p>
         </div>
 
-        <!-- ROLE -->
-        <div class="flex flex-col">
-            <label class="mb-1 font-semibold text-[#2E2E2E]">Role</label>
-            <select name="role" 
-                    class="px-3 py-2 rounded-xl border border-[#2ECCB0] bg-white text-[#2E2E2E] focus:ring-2 focus:ring-[#2ECCB0] outline-none transition">
-                <option value="admin" {{ $user->role=='admin' ? 'selected' : '' }}>Admin</option>
-                <option value="customer" {{ $user->role=='customer' ? 'selected' : '' }}>Customer</option>
-            </select>
+        <div>
+            <label class="text-sm font-semibold text-[#2E2E2E]">Role</label>
+            <p class="px-3 py-2 rounded-lg border border-[#D85C20] bg-white text-[#2E2E2E] text-sm">
+                {{ ucfirst($user->role) }}
+            </p>
         </div>
+    </div>
 
-        <!-- SUBMIT BUTTON -->
-        <div class="text-center">
-            <button type="submit"
-                    class="bg-[#2ECCB0] hover:bg-[#26b696] text-[#2E2E2E] font-semibold px-6 py-2 rounded-2xl shadow-md transition">
-                Update User
-            </button>
-        </div>
-    </form>
+    <!-- BACK BUTTON -->
+    <div class="text-center mt-5">
+        <a href="{{ route('admin.users.index') }}"
+           class="bg-[#D85C20] hover:bg-[#b14a1a] text-white font-semibold px-5 py-2 rounded-xl shadow transition text-sm">
+            Back to Users
+        </a>
+    </div>
 </div>
 @endsection

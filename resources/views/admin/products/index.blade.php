@@ -5,60 +5,71 @@
 
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-        <h1 class="text-3xl font-bold text-[#2ECCB0] mb-2 sm:mb-0">Products</h1>
-        <a href="{{ route('admin.products.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">
+        <h1 class="text-3xl font-bold text-[#D85C20] mb-2 sm:mb-0">Products</h1>
+        <a href="{{ route('admin.products.create') }}" class="bg-[#D85C20] hover:bg-[#b14a1a] text-white px-4 py-2 rounded transition flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
             Add Product
         </a>
     </div>
 
     <!-- Success message -->
     @if(session('success'))
-    <div class="bg-green-600 text-white p-3 rounded shadow">
+    <div class="bg-[#D85C20] text-white p-3 rounded shadow flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
         {{ session('success') }}
     </div>
     @endif
 
-    <!-- Products Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+    <!-- Products List (Inline / Text-box style) -->
+    <div class="space-y-2 mt-4">
         @foreach($products as $product)
-        <div class="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden text-sm">
+        <div class="flex items-center justify-between bg-white border border-[#D85C20] rounded-lg shadow px-3 py-2 text-sm hover:shadow-lg transition">
             
-            <!-- Image -->
-            <div class="h-36 w-full bg-gray-100 flex items-center justify-center">
-                @if($product->image)
-                    <img src="{{ asset('storage/'.$product->image) }}" class="h-full w-full object-cover transition-transform hover:scale-105">
-                @else
-                    <span class="text-gray-400">No Image</span>
-                @endif
-            </div>
-
-            <!-- Info -->
-            <div class="p-3 space-y-1">
-                <h2 class="text-md font-semibold text-gray-800">{{ $product->name }}</h2>
-                <p class="text-gray-500">{{ $product->category->name ?? 'Uncategorized' }}</p>
-                <p class="text-lg font-bold text-[#2ECCB0]">${{ number_format($product->price, 2) }}</p>
-                <p class="text-gray-600 text-sm">Stock: {{ $product->stock }}</p>
-
-                <!-- Actions -->
-                <div class="flex space-x-1 mt-2 text-xs">
-                    <a href="{{ route('admin.products.edit', $product) }}" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white text-center py-1 rounded transition">
-                        Edit
-                    </a>
-                    <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="flex-1">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-1 rounded transition" onclick="return confirm('Delete this product?')">
-                            Delete
-                        </button>
-                    </form>
+            <!-- Product Info -->
+            <div class="flex items-center space-x-3 flex-1">
+                <div class="w-12 h-12 bg-gray-100 rounded overflow-hidden flex-shrink-0">
+                    @if($product->image)
+                        <img src="{{ asset('storage/'.$product->image) }}" class="h-full w-full object-cover">
+                    @else
+                        <span class="text-gray-400 text-xs flex items-center justify-center h-full">No Img</span>
+                    @endif
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-semibold text-gray-800">{{ $product->name }}</span>
+                    <span class="text-gray-500 text-xs">{{ $product->category->name ?? 'Uncategorized' }}</span>
                 </div>
             </div>
+
+            <!-- Price & Stock -->
+            <div class="flex flex-col items-end mr-4 flex-shrink-0">
+                <span class="text-[#D85C20] font-bold">${{ number_format($product->price, 2) }}</span>
+                <span class="text-gray-600 text-xs">Stock: {{ $product->stock }}</span>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex space-x-1 flex-shrink-0">
+                <a href="{{ route('admin.products.edit', $product) }}" class="bg-[#FFA94D] hover:bg-[#e68a30] text-white px-2 py-1 rounded text-xs transition">
+                    Edit
+                </a>
+                <form action="{{ route('admin.products.destroy', $product) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs transition" onclick="return confirm('Delete this product?')">
+                        Delete
+                    </button>
+                </form>
+            </div>
+
         </div>
         @endforeach
     </div>
 
     <!-- Pagination -->
-    <div class="mt-6">
+    <div class="mt-4">
         {{ $products->links() }}
     </div>
 

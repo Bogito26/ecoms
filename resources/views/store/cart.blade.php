@@ -1,12 +1,12 @@
 @extends('layouts.customer')
 
 @section('content')
-<div class="max-w-4xl mx-auto p-6 space-y-8 bg-[#DFF9F3] rounded-3xl shadow-md">
+<div class="max-w-4xl mx-auto p-6 space-y-8 bg-[#FFF3E0] rounded-3xl shadow-lg">
 
     <!-- Title -->
-    <h2 class="text-3xl font-extrabold text-[#2ECCB0] flex items-center gap-2">
+    <h2 class="text-3xl font-extrabold text-[#FF5722] flex items-center gap-2">
         <!-- Cart Icon -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-[#2ECCB0]" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-[#FF5722]" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round"
                   d="M2 3h2l3.6 9.59a2 2 0 001.87 1.29H17a2 2 0 001.92-1.46L21 6H6" />
             <circle cx="9" cy="20" r="1"></circle>
@@ -17,7 +17,7 @@
 
     @if(session('cart') && count(session('cart')) > 0)
         <table class="w-full text-left bg-white rounded-2xl overflow-hidden shadow-md">
-            <thead class="bg-[#2ECCB0] text-white">
+            <thead class="bg-[#FF5722] text-white">
                 <tr>
                     <th class="px-4 py-3">Product</th>
                     <th class="px-4 py-3">Price</th>
@@ -36,13 +36,13 @@
                         $total += $subtotal; 
                     @endphp
 
-                    <tr class="border-b border-[#DFF9F3]">
+                    <tr class="border-b border-[#FFECB3] hover:bg-[#FFF8E1] transition-colors">
                         <td class="px-4 py-3 flex items-center space-x-3">
                             @if($item['image'])
                                 <img src="{{ asset('storage/' . $item['image']) }}"
-                                     class="h-12 w-12 object-cover rounded-xl shadow-sm">
+                                     class="h-14 w-14 object-cover rounded-2xl shadow-sm">
                             @else
-                                <span class="h-12 w-12 flex items-center justify-center bg-gray-200 text-gray-500 rounded-xl text-xs">No Image</span>
+                                <span class="h-14 w-14 flex items-center justify-center bg-gray-200 text-gray-500 rounded-2xl text-xs">No Image</span>
                             @endif
                             <span class="font-semibold">{{ $item['name'] }}</span>
                         </td>
@@ -58,10 +58,10 @@
                                        name="quantity"
                                        value="{{ $item['quantity'] }}"
                                        min="1"
-                                       class="w-16 px-2 py-1 rounded-xl border border-[#2ECCB0] text-[#2E2E2E] bg-[#DFF9F3]">
-                                
+                                       class="w-16 px-2 py-1 rounded-xl border border-[#FF5722] text-[#2E2E2E] bg-[#FFF3E0] focus:ring-2 focus:ring-[#FF5722] focus:border-transparent">
+                                 
                                 <button type="submit"
-                                    class="bg-[#2ECCB0] hover:bg-[#29b79f] px-3 py-1 rounded-xl text-white font-medium shadow">
+                                    class="bg-[#FF5722] hover:bg-[#E64A19] px-3 py-1 rounded-2xl text-white font-medium shadow transition transform hover:scale-105">
                                     Update
                                 </button>
                             </form>
@@ -75,7 +75,7 @@
                             <form action="{{ route('cart.remove', $id) }}" method="POST">
                                 @csrf
                                 <button type="submit"
-                                    class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-xl text-white font-medium shadow flex items-center gap-1">
+                                    class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-2xl text-white font-medium shadow flex items-center gap-1 transition transform hover:scale-105">
                                     <!-- Trash Icon -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
                                          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -99,7 +99,7 @@
             </p>
 
             <a href="{{ route('checkout.index') }}"
-               class="bg-[#2ECCB0] hover:bg-[#29b79f] px-5 py-3 rounded-2xl text-white font-semibold shadow-md mt-3 inline-flex items-center gap-2">
+               class="bg-[#FF5722] hover:bg-[#E64A19] px-6 py-3 rounded-2xl text-white font-semibold shadow-md mt-3 inline-flex items-center gap-2 transition transform hover:scale-105">
                 <!-- Checkout Icon -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
                      stroke="currentColor" stroke-width="2">
@@ -112,7 +112,7 @@
 
     @else
         <p class="text-[#2E2E2E] text-lg font-medium">Your cart is empty.</p>
-        <a href="{{ route('store.index') }}" class="text-[#2ECCB0] hover:underline mt-2 inline-block">
+        <a href="{{ route('store.index') }}" class="text-[#FF5722] hover:underline mt-2 inline-block font-semibold">
             Go Shopping →
         </a>
     @endif
